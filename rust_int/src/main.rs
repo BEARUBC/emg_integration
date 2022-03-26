@@ -1,6 +1,7 @@
-
-use std::io::{Write, Read};
+use std::{thread, time};
+use std::thread::JoinHandle;
 use std::process::{Command, Stdio, Child, ChildStdin, ChildStdout};
+use std::io::{Write, Read, BufReader, BufRead};
 use std::vec::Vec;
 
 static SUCCESS_MSG: &'static str = "coAmpInitializeSuccess";
@@ -12,27 +13,55 @@ fn main() {
         Err(err) => println!("error!"),
         Ok(output) => (),
     }
-
-    let mut v: Vec<i32> = Vec::new();
     
-
 }
 
 fn start(begin: bool) -> Result<(), std::io::Error> {
-    let child = (Command::new("../emg")
+    let mut child = Command::new("../emg")
                             .stdout(Stdio::piped())
-                            .spawn())?;
+                            .stdin(Stdio::piped())
+                            .spawn()?;
 
+    let mut stdout = child.stdout.take().expect("Failed to get stdout");
     let mut s = String::new();
 
-    match child.stdout.unwrap().read_to_string(&mut s) {
-        Err(why) => return Err(why),
-        Ok(_) => (),
-    }
+    let mut f = BufReader::new(stdout);
+    
 
-    println!("{}", s);
 
-    println!("{:?}", save_data( String::from(s) ));
+
+
+    loop {
+        f.read_line(&mut s).unwrap();
+        println!("{}", s);
+    };
+
+        println!("finished iteration");
+        // stdout.read_exact(&mut bytes).unwrap();
+        // println!("{:?}", bytes);
+
+        // println!("{}", s);
+
+        // if !s.is_empty(){
+        //     println!("not empty");
+        //     println!("{}", s);
+        // }
+    
+
+
+    // let read_thread = thread::spawn(move || {
+    //     loop{
+    //         let mut resp_string = String::new();
+
+    //         stdout.read_to_string(&mut resp_string).expect("Failed to read");
+
+    //         if !resp_string.is_empty(){
+    //             println!("not empty");
+    //             println!("{}", resp_string);
+    //         }
+    //     }
+    // });
+
     return Ok(());
 }
 
