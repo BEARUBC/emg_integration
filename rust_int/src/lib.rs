@@ -5,10 +5,15 @@ use std::io::{Write, Read, BufReader, BufRead};
 use std::io::Error as StdError;
 use std::vec::Vec;
 
-
-pub struct EMG_INTEGRATION{
+pub struct EMG_INTEGRATION {
     pipe: std::process::ChildStdout,
 }
+
+
+trait Get_Data{
+    fn get_data(&self, data_num: u8) -> Vec<[u8; 8]>;
+}
+
 
 impl EMG_INTEGRATION{
     pub fn new(&self) -> Result<EMG_INTEGRATION, StdError>{
@@ -17,17 +22,20 @@ impl EMG_INTEGRATION{
                             .stdin(Stdio::piped())
                             .spawn()?;
         
-        Ok(
-            EMG_INTEGRATION{
-                pipe: child.stdout.take().expect("Failed to get stdout"),
-            }
+        Ok( 
+                EMG_INTEGRATION{
+                    pipe: child.stdout.take().expect("Failed to get stdout")
+                },
         )            
     }
 
+}
 
-    pub fn get_data(&self, data_num: u8) -> Vec<[u8; 8]> {
+impl Get_Data for EMG_INTEGRATION{
+    fn get_data(&self, data_num: u8) -> Vec<[u8; 8]> {
         let data = Vec::new();
-        let mut f = BufReader::new(self.pipe);
+        let mut pipe = &(self.pipe);
+        let mut f = BufReader::new(pipe);
 
 
         return data;
