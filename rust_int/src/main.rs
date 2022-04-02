@@ -4,6 +4,8 @@ use std::process::{Command, Stdio, Child, ChildStdin, ChildStdout};
 use std::io::{Write, Read, BufReader, BufRead};
 use std::vec::Vec;
 
+
+
 static SUCCESS_MSG: &'static str = "coAmpInitializeSuccess";
 
 fn main() {
@@ -13,6 +15,14 @@ fn main() {
         Err(err) => println!("error!"),
         Ok(output) => (),
     }
+
+    vector data
+
+    loop{
+        read_data(data)
+    }
+
+
     
 }
 
@@ -35,32 +45,6 @@ fn start(begin: bool) -> Result<(), std::io::Error> {
         f.read_line(&mut s).unwrap();
         println!("{}", s);
     };
-
-        println!("finished iteration");
-        // stdout.read_exact(&mut bytes).unwrap();
-        // println!("{:?}", bytes);
-
-        // println!("{}", s);
-
-        // if !s.is_empty(){
-        //     println!("not empty");
-        //     println!("{}", s);
-        // }
-    
-
-
-    // let read_thread = thread::spawn(move || {
-    //     loop{
-    //         let mut resp_string = String::new();
-
-    //         stdout.read_to_string(&mut resp_string).expect("Failed to read");
-
-    //         if !resp_string.is_empty(){
-    //             println!("not empty");
-    //             println!("{}", resp_string);
-    //         }
-    //     }
-    // });
 
     return Ok(());
 }
