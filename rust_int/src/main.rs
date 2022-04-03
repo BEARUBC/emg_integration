@@ -1,82 +1,67 @@
-use std::{thread, time};
-use std::thread::JoinHandle;
+
+use std::io::{Write, Read};
 use std::process::{Command, Stdio, Child, ChildStdin, ChildStdout};
-use std::io::{Write, Read, BufReader, BufRead};
-use std::vec::Vec;
+mod library;
 
 
-
-static SUCCESS_MSG: &'static str = "coAmpInitializeSuccess";
-
-fn main() {
-    let init = start(true);
-
-    match init {
-        Err(err) => println!("error!"),
-        Ok(output) => (),
+fn main(){
+    let emg_integration = library::EMG_INTEGRATION::new();
+    match emg_integration {
+      Err(e) => println!("{}", e),
+      Ok(emg_integration) => {
+          (emg_integration.clone()).read_thread.join().expect("The thread being joined has panicked");
+        //   let data = emg_integration.data.lock().unwrap();
+        //     for i in 0..data.len() as u8 {
+        //         println!("{}", i);
+        //     }
+            let x = emg_integration.get_data(3);
+            match x {
+                Err(e) => println!("{}", e),
+                Ok(x) => {
+                    for i in 0..x.len() as u8 {
+                        println!("{}", i);
+                    }
+                }
+            }
+      }
     }
-
-    vector data
-
-    loop{
-        read_data(data)
-    }
-
-
-    
 }
 
-fn start(begin: bool) -> Result<(), std::io::Error> {
-    let mut child = Command::new("../emg")
-                            .stdout(Stdio::piped())
-                            .stdin(Stdio::piped())
-                            .spawn()?;
+//fn main() {
+    // println!("Hello, world!");
 
-    let mut stdout = child.stdout.take().expect("Failed to get stdout");
-    let mut s = String::new();
+    // let mut child = Command::new("../a")
+    //                         .stdout(Stdio::piped())
+    //                         .spawn()
+    //                         .expect("failed to execute child");
 
-    let mut f = BufReader::new(stdout);
-    
+    // let ecode = child.wait()
+    //                 .expect("failed to wait on child");
 
+    // assert!(ecode.success());
+    // let mut stdout = child.stdout.take().expect("Failed to get stdout");
+    // let mut resp_string = String::new();
+    // stdout.read_to_string(&mut resp_string).expect("Failed to read");
+    // println!("{}",resp_string);
 
-
-
-    loop {
-        f.read_line(&mut s).unwrap();
-        println!("{}", s);
-    };
-
-    return Ok(());
-}
-
-
-fn save_data(s: String) -> [u32; 8]{
-    let mut data: [u32; 8] = [0; 8];
-    let mut counter = 0;
-    let zero_ASCII: u32 = ('0') as u32;
-    for char in s.chars(){
-        data[counter] = (char as u32) - zero_ASCII;
-        counter += 1;
-    }
-    return data;
-}
-
-
-
+//     let init = start(true);
+//     match init {
+//         Err(err) => println!("error!"),
+//         Ok(output) => if(output) { println!("success") } else { println!("not init") },
+//     }
+// }
 
 // fn start(begin: bool) -> Result<bool, std::io::Error> {
 //     let child = (Command::new("../emg")
 //                             .stdout(Stdio::piped())
 //                             .spawn())?;
-
 //     let mut s = String::new();
 
 //     match child.stdout.unwrap().read_to_string(&mut s) {
 //         Err(why) => return Err(why),
 //         Ok(_) => (),
 //     }
-
-//     if s == SUCCESS_MSG
+//     if s == "coAmpInitializeSuccess"
 //     {
 //         return Ok(true);
 //     }
@@ -85,4 +70,4 @@ fn save_data(s: String) -> [u32; 8]{
 //         return Ok(false);
 //     }
 
-// }
+//}
