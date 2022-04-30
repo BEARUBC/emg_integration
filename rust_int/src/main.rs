@@ -8,18 +8,18 @@ use std::{time, thread};
 fn main(){
     let emg_integration = library::EMG_INTEGRATION::new();
     match emg_integration {
-      Err(e) => println!("{}", e),
-      Ok(emg_integration) => {
-        //   (emg_integration).read_thread.join().expect("The thread being joined has panicked");
-        println!("after join");
-        //   let data = emg_integration.data.lock().unwrap();
-        //     for i in 0..data.len() as u8 {
-        //         println!("{}", i);
-        //     }
+        Err(e) => println!("{}", e),
+        Ok(emg_integration) => {
+            //   (emg_integration).read_thread.join().expect("The thread being joined has panicked");
+            println!("after join");
+            //   let data = emg_integration.data.lock().unwrap();
+            //     for i in 0..data.len() as u8 {
+            //         println!("{}", i);
+            //     }
 
-        let ten_millis = time::Duration::from_millis(1000);
+            let ten_millis = time::Duration::from_millis(1000);
 
-        thread::sleep(ten_millis);
+            // thread::sleep(ten_millis);
             let x = emg_integration.get_data(9);
             match x {
                 Err(e) => println!("{}", e),
@@ -27,9 +27,37 @@ fn main(){
                     for i in 0..x.len() as u8 {
                         println!("waa {}", i);
                     }
+
+                    println!("{}", x.len() == 9);
                 }
             }
-      }
+
+            thread::sleep(ten_millis);
+            let x = emg_integration.get_data(9);
+            match x {
+                Err(e) => println!("{}", e),
+                Ok(x) => {
+                    for i in 0..x.len() as u8 {
+                        println!("waa {}", i);
+                    }
+
+                    println!("{}", x.len() == 9);
+                }
+            }
+
+            // thread::sleep(ten_millis);
+            let x = emg_integration.get_data(9);
+            match x {
+                Err(e) => println!("{}", e),
+                Ok(x) => {
+                    for i in 0..x.len() as u8 {
+                        println!("waa {}", i);
+                    }
+
+                    println!("{}", x.len() == 9);
+                }
+            }
+        }
     }
 }
 

@@ -20,7 +20,7 @@ pub struct EMG_INTEGRATION {
 
 
 impl EMG_INTEGRATION{
-    pub fn new() -> Result<EMG_INTEGRATION, StdError>{
+    pub fn new() -> Result<EMG_INTEGRATION, StdError> {
         
         let mut child = Command::new(".././a.out")
                             .stdout(Stdio::piped())
@@ -32,27 +32,26 @@ impl EMG_INTEGRATION{
 
         let mut data_clone = data.clone();
 
-        Ok( 
-                EMG_INTEGRATION{
-                    data: data,
-                    read_thread: thread::spawn(move || {
-            
-            
-                        let mut buf_reader = BufReader::new(pipe);
+        return Ok( 
+            EMG_INTEGRATION{
+                data: data,
+                read_thread: thread::spawn(move || {
+        
+                    let mut buf_reader = BufReader::new(pipe);
+                    
+                    loop {
+                        // println!("loop print");
+                        let mut data_str = String::new();
+                        buf_reader.read_line(&mut data_str).unwrap();
                         
-                        loop {
-                            // println!("loop print");
-                            let mut data_str = String::new();
-                            buf_reader.read_line(&mut data_str).unwrap();
-                            
-                            data_clone.lock().unwrap().push( str_to_array(data_str.clone()) );
-            
-                            // println!("{}", data_str);
-                        }
-            
-                    }),
-                },
-        )            
+                        data_clone.lock().unwrap().push( str_to_array(data_str.clone()) );
+        
+                        // println!("{}", data_str);
+                    }
+        
+                }),
+            },
+        );            
     }
     // pub fn init_thread(&'static self) -> 
     // {
@@ -87,7 +86,6 @@ impl EMG_INTEGRATION{
 
         if data_num < 0 {
             return Err(StdError::new(ErrorKind::Other, "data_num must be greater than or equal to 0"));
-
         }
 
         let mut read_data = self.data.lock().unwrap().clone();
@@ -101,7 +99,7 @@ impl EMG_INTEGRATION{
             
         }
 
-        Ok(ret_data)
+        return Ok(ret_data);
     }
 }
 
