@@ -6,7 +6,7 @@ use std::io::Error as StdError;
 use std::vec::Vec;
 use std::sync::{Arc, Mutex};
 
-#[derive(Clone)]
+// #[derive(Clone)]
 pub struct EMG_INTEGRATION {
     //pipe: std::process::ChildStdout,
     pub data: Arc<Mutex<Vec<[u8; 8]>>>,
@@ -22,7 +22,7 @@ pub struct EMG_INTEGRATION {
 impl EMG_INTEGRATION{
     pub fn new() -> Result<EMG_INTEGRATION, StdError>{
         
-        let mut child = Command::new("../emg")
+        let mut child = Command::new(".././a.out")
                             .stdout(Stdio::piped())
                             .stdin(Stdio::piped())
                             .spawn()?;
@@ -47,7 +47,7 @@ impl EMG_INTEGRATION{
                             
                             data_clone.lock().unwrap().push( str_to_array(data_str.clone()) );
             
-                            //println!("{}", data_str);
+                            // println!("{}", data_str);
                         }
             
                     }),
@@ -92,7 +92,7 @@ impl EMG_INTEGRATION{
 
         let mut read_data = self.data.lock().unwrap().clone();
 
-        for _ in 1..std::cmp::min(data_num, read_data.len() as u8) {
+        for _ in 0..std::cmp::min(data_num, read_data.len() as u8) {
             let data = read_data.pop();
             match data {
                 None => break,

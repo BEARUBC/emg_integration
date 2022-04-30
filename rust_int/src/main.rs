@@ -2,6 +2,7 @@
 use std::io::{Write, Read};
 use std::process::{Command, Stdio, Child, ChildStdin, ChildStdout};
 mod library;
+use std::{time, thread};
 
 
 fn main(){
@@ -9,17 +10,22 @@ fn main(){
     match emg_integration {
       Err(e) => println!("{}", e),
       Ok(emg_integration) => {
-          (emg_integration.clone()).read_thread.join().expect("The thread being joined has panicked");
+        //   (emg_integration).read_thread.join().expect("The thread being joined has panicked");
+        println!("after join");
         //   let data = emg_integration.data.lock().unwrap();
         //     for i in 0..data.len() as u8 {
         //         println!("{}", i);
         //     }
-            let x = emg_integration.get_data(3);
+
+        let ten_millis = time::Duration::from_millis(1000);
+
+        thread::sleep(ten_millis);
+            let x = emg_integration.get_data(9);
             match x {
                 Err(e) => println!("{}", e),
                 Ok(x) => {
                     for i in 0..x.len() as u8 {
-                        println!("{}", i);
+                        println!("waa {}", i);
                     }
                 }
             }
