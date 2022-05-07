@@ -22,10 +22,10 @@ pub struct EMG_INTEGRATION {
 impl EMG_INTEGRATION{
     pub fn new() -> Result<EMG_INTEGRATION, StdError> {
         
-        let mut child = Command::new(".././a.out")
-                            .stdout(Stdio::piped())
-                            .stdin(Stdio::piped())
-                            .spawn()?;
+        let mut child = Command::new("python")
+                                .args(["../python/test.py"])
+                                .stdout(Stdio::piped())
+                                .spawn()?;
 
         let pipe = child.stdout.take().expect("Failed to get stdout");
         let data = Arc::new( Mutex::new( Vec::new() ) );
