@@ -9,7 +9,7 @@ use std::sync::{Arc, Mutex};
 // #[derive(Clone)]
 pub struct EMG_INTEGRATION {
     //pipe: std::process::ChildStdout,
-    pub data: Arc<Mutex<Vec<[u8; 8]>>>,
+    pub data: Arc<Mutex<Vec<u8>>>,
     pub read_thread: JoinHandle<()>
 
 }
@@ -41,12 +41,26 @@ impl EMG_INTEGRATION{
                     
                     loop {
                         // println!("loop print");
+
                         let mut data_str = String::new();
+
                         buf_reader.read_line(&mut data_str).unwrap();
+
+                        // print!("before: {}end\n", data_str);
+
+                        data_str.pop();
+
+                        // print!("after: {}end\n", data_str);
+                    
+                        data_clone.lock().unwrap().push( data_str.parse::<u8>().unwrap() );
                         
-                        data_clone.lock().unwrap().push( str_to_array(data_str.clone()) );
-        
-                        // println!("{}", data_str);
+                        let data_check = data_clone.lock().unwrap();
+                        
+                        let data_from_check = data_check.get(data_check.len() - 1);
+
+                        
+
+                        
                     }
         
                 }),
@@ -80,9 +94,9 @@ impl EMG_INTEGRATION{
     // }
 
 
-    pub fn get_data(&self, data_num: u8) -> Result<Vec<[u8; 8]>, StdError> {
+    pub fn get_data(&self, data_num: u8) -> Result<Vec<u8>, StdError> {
         // let mut f = BufReader::new(self.pipe);
-        let mut ret_data: Vec<[u8; 8]> = Vec::new();
+        let mut ret_data: Vec<u8> = Vec::new();
 
         if data_num < 0 {
             return Err(StdError::new(ErrorKind::Other, "data_num must be greater than or equal to 0"));
@@ -94,32 +108,37 @@ impl EMG_INTEGRATION{
             let data = read_data.pop();
             match data {
                 None => break,
-                Some(data) => ret_data.push(data),
+        
+        Some(data) => {
+            ret_data.push(data);
+        },
             }
             
         }
-
         return Ok(ret_data);
     }
 }
 
 
-fn str_to_array(s: String) -> [u8; 8]{
-    let mut data: [u8; 8] = [0; 8];
-    let mut counter = 0;
-    let zero_ASCII: u8 = ('0') as u8;
-    //println!("{}", s.chars());
-    for char in s.chars(){
-        if char != '\n' {
-            break;
-        }
-        //println!("{}, {}, {}", char as u32, zero_ASCII, char as u8 - zero_ASCII);
-        let d = char as u8 - zero_ASCII;
-        data[counter] = d;
-        counter += 1;
-    }
-    return data;
-}
+
+
+// fn str_to_array(s: String) -> [u8; 8]{
+//     let mut data: [u8; 8] = [0; 8];
+//     let mut counter = 0;
+//     let zero_ASCII: u8 = ('0') as u8;
+//     //println!("{}", s.chars());
+//     for char in s.chars(){
+//         if char != '\n' {
+//             break;
+//         }
+//         //println!("{}, {}, {}", char as u32, zero_ASCII, char as u8 - zero_ASCII);
+//         let d = char as u8 - zero_ASCII;
+//         data[counter] = d;
+//         counter += 1;
+//     }
+//     return data;
+// }
+
 
 
 //  impl Get_Data for EMG_INTEGRATION{

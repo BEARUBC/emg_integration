@@ -19,29 +19,24 @@ fn main(){
 
             let ten_millis = time::Duration::from_millis(1000);
 
-            // thread::sleep(ten_millis);
-            let x = emg_integration.get_data(9);
-            match x {
-                Err(e) => println!("{}", e),
-                Ok(x) => {
-                    for i in 0..x.len() as u8 {
-                        println!("waa {}", i);
-                    }
-
-                    println!("{}", x.len() == 9);
-                }
-            }
-
             thread::sleep(ten_millis);
             let x = emg_integration.get_data(9);
             match x {
                 Err(e) => println!("{}", e),
                 Ok(x) => {
-                    for i in 0..x.len() as u8 {
-                        println!("waa {}", i);
-                    }
+                    println!("got data is: {:?}", x);
 
-                    println!("{}", x.len() == 9);
+                
+                }
+            }
+
+            //thread::sleep(ten_millis);
+            let x = emg_integration.get_data(9);
+            match x {
+                Err(e) => println!("{}", e),
+                Ok(x) => {
+                    println!("got data is: {:?}", x);
+
                 }
             }
 
@@ -50,11 +45,8 @@ fn main(){
             match x {
                 Err(e) => println!("{}", e),
                 Ok(x) => {
-                    for i in 0..x.len() as u8 {
-                        println!("waa {}", i);
-                    }
+                    println!("got data is: {:?}", x);
 
-                    println!("{}", x.len() == 9);
                 }
             }
         }
